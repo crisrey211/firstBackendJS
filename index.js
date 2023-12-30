@@ -1,8 +1,11 @@
 require('dotenv').config()
 const express = require('express')
 const movies = require('./movies.json')
+const crypto = require('node:crypto')
 const port = process.env.PORT
+
 const app = express()
+app.use(express.json())
 app.disable('x-powered-by')
 
 app.get('/movies', (req, res) => {
@@ -21,6 +24,25 @@ app.get('/movies/:id', (req, res) => {
     const movie = movies.find((item) => item.id === id)
     if (movie) return res.json(movie)
     res.status(404).json({ message: 'Movie not found' })
+})
+
+app.post('/movies', (req, res) => {
+    const { title, year, director, duration, rate, poster, genre } = req.body
+
+    const newMovie = {
+        id: crypto.randomUUID(),
+        title,
+        year,
+        director,
+        duration,
+        rate: rate ?? 0,
+        poster,
+        genre,
+    }
+    //Esto no es REST xq estamos guardadno el estado en memoria
+    movies.push(newMovie)
+    console.log(newMovie)
+    res.status(201).json(newMovie)
 })
 
 app.listen(port, () => {
