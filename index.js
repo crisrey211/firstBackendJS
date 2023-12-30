@@ -1,7 +1,8 @@
 require('dotenv').config()
 const express = require('express')
-const movies = require('./movies.json')
 const crypto = require('node:crypto')
+const movies = require('./movies.json')
+const { validateMovie } = require('./schemas/movies')
 const port = process.env.PORT
 
 const app = express()
@@ -27,17 +28,14 @@ app.get('/movies/:id', (req, res) => {
 })
 
 app.post('/movies', (req, res) => {
-    const { title, year, director, duration, rate, poster, genre } = req.body
+    const result = validateMovie(req.body)
+    if (!result.success) {
+        return res.status(400).json({ error: JSON.parse(result.error.message) })
+    }
 
     const newMovie = {
         id: crypto.randomUUID(),
-        title,
-        year,
-        director,
-        duration,
-        rate: rate ?? 0,
-        poster,
-        genre,
+        ...result.data,
     }
     //Esto no es REST xq estamos guardadno el estado en memoria
     movies.push(newMovie)
