@@ -29,10 +29,15 @@ const movieSchema = z.object({
     ),
 })
 
-function validateMovie(object) {
-    return movieSchema.safeParse(object)
+function validateMovie(input) {
+    return movieSchema.safeParse(input)
+}
+/*Validación para  */
+function validatePartialMovie(input) {
+    return movieSchema.partial().safeParse(input)
 }
 
 module.exports = {
     validateMovie,
+    validatePartialMovie,
 }

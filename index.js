@@ -2,7 +2,7 @@ require('dotenv').config()
 const express = require('express')
 const crypto = require('node:crypto')
 const movies = require('./movies.json')
-const { validateMovie } = require('./schemas/movies')
+const { validateMovie, validatePartialMovie } = require('./schemas/movies')
 const port = process.env.PORT
 
 const app = express()
@@ -41,6 +41,27 @@ app.post('/movies', (req, res) => {
     movies.push(newMovie)
     console.log(newMovie)
     res.status(201).json(newMovie)
+})
+
+app.patch('/movies/:id', (req, res) => {
+    const { id } = req.params
+
+    const result = validatePartialMovie(req.body)
+    if (!result.success) {
+        return res
+            .status(400)
+            .json({ error: 'ALGO EN LA VALIDACION HA FALLADO' })
+    }
+
+    const movieIndex = movies.findIndex((movie) => movie.id === id)
+    if (movieIndex === -1)
+        return res.status(404).json({ message: 'Movie not found' })
+
+    const updateMovie = { ...movies[movieIndex], ...result.data }
+
+    movies[movieIndex] = updateMovie
+
+    return res.status(200).json(updateMovie)
 })
 
 app.listen(port, () => {
