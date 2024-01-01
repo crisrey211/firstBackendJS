@@ -41,6 +41,8 @@ app.delete('/movies/:id', (req, res) => {
         return res.status(404).json({ message: 'Movies not found' })
     }
     movies.splice(movieIndex, 1)
+
+    return res.json({ message: 'Movie deleted' })
 })
 
 app.get('/movies/:id', (req, res) => {
