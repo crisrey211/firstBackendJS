@@ -1,12 +1,14 @@
-require('dotenv').config()
-const express = require('express')
-const crypto = require('node:crypto')
+import express, { json } from 'express'
+import { randomUUID } from 'node:crypto'
+import { validateMovie, validatePartialMovie } from './schemas/movies.js'
+
+//como leer un json en ESModules de forma recomendada por ahora
+import { createRequire } from 'node:module'
+const require = createRequire(import.meta.url)
 const movies = require('./movies.json')
-const { validateMovie, validatePartialMovie } = require('./schemas/movies')
-const port = process.env.PORT
 
 const app = express()
-app.use(express.json())
+app.use(json())
 app.disable('x-powered-by')
 
 // métodos normales: GET/HEAD/POST
@@ -65,12 +67,11 @@ app.post('/movies', (req, res) => {
     }
 
     const newMovie = {
-        id: crypto.randomUUID(),
+        id: randomUUID(),
         ...result.data,
     }
     //Esto no es REST xq estamos guardadno el estado en memoria
     movies.push(newMovie)
-    console.log(newMovie)
     res.status(201).json(newMovie)
 })
 
@@ -105,6 +106,7 @@ app.options('/movies/:id', (req, res) => {
     res.status(200)
 })
 
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`)
+const PORT = process.env.PORT ?? 1234
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`)
 })
