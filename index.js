@@ -34,6 +34,15 @@ app.get('/movies', (req, res) => {
     return res.json(movies)
 })
 
+app.delete('/movies/:id', (req, res) => {
+    const { id } = req.params
+    const movieIndex = movies.findIndex((movie) => movie.id === id)
+    if (movieIndex === -1) {
+        return res.status(404).json({ message: 'Movies not found' })
+    }
+    movies.splice(movieIndex, 1)
+})
+
 app.get('/movies/:id', (req, res) => {
     const { id } = req.params
     const movie = movies.find((item) => item.id === id)
