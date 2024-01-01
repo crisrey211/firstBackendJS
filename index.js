@@ -9,12 +9,18 @@ const app = express()
 app.use(express.json())
 app.disable('x-powered-by')
 
+// métodos normales: GET/HEAD/POST
+// métodos complejos: PUT/PATCH/DELETE
+
+//CORS PRE-Flight
+//OPTIONS
+
 const ACCEPTED_ORIGINS = [
-    'https://localhost:3000',
-    'https://localhost:1234',
-    'https://localhost:8020',
-    'https://movies.com',
-    'https://midu.dev',
+    'http://localhost:3000',
+    'http://localhost:1234',
+    'http://172.30.240.1:5500',
+    'http://movies.com',
+    'http://midu.dev',
 ]
 
 app.get('/movies', (req, res) => {
@@ -87,6 +93,16 @@ app.patch('/movies/:id', (req, res) => {
     movies[movieIndex] = updateMovie
 
     return res.status(200).json(updateMovie)
+})
+
+app.options('/movies/:id', (req, res) => {
+    const origin = req.header('origin')
+
+    if (ACCEPTED_ORIGINS.includes(origin)) {
+        res.header('Access-Control-Allow-Origin', origin)
+        res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE')
+    }
+    res.status(200)
 })
 
 app.listen(port, () => {
