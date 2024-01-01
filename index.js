@@ -9,7 +9,21 @@ const app = express()
 app.use(express.json())
 app.disable('x-powered-by')
 
+const ACCEPTED_ORIGINS = [
+    'https://localhost:3000',
+    'https://localhost:1234',
+    'https://localhost:8020',
+    'https://movies.com',
+    'https://midu.dev',
+]
+
 app.get('/movies', (req, res) => {
+    //para solucionar el CORS
+    const origin = req.header('origin')
+    if (ACCEPTED_ORIGINS.includes(origin)) {
+        res.header('Access-Control-Allow-Origin', origin)
+    }
+
     const { genre } = req.query
     if (genre) {
         const filtered_movies = movies.filter((item) =>
