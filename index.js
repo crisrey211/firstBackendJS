@@ -26,7 +26,7 @@ const ACCEPTED_ORIGINS = [
 ]
 
 app.get('/movies', (req, res) => {
-    //para solucionar el CORS
+    //para solucionar el CORS al ahcer una solocitud GET
     const origin = req.header('origin')
     if (ACCEPTED_ORIGINS.includes(origin)) {
         res.header('Access-Control-Allow-Origin', origin)
@@ -43,6 +43,12 @@ app.get('/movies', (req, res) => {
 })
 
 app.delete('/movies/:id', (req, res) => {
+    //para solucionar el CORS al ahcer una solocitud DELETE
+    const origin = req.header('origin')
+    if (ACCEPTED_ORIGINS.includes(origin)) {
+        res.header('Access-Control-Allow-Origin', origin)
+    }
+
     const { id } = req.params
     const movieIndex = movies.findIndex((movie) => movie.id === id)
     if (movieIndex === -1) {
@@ -97,16 +103,20 @@ app.patch('/movies/:id', (req, res) => {
 })
 
 app.options('/movies/:id', (req, res) => {
-    const origin = req.header('origin')
-
+    const origin = req.header('Origin')
     if (ACCEPTED_ORIGINS.includes(origin)) {
         res.header('Access-Control-Allow-Origin', origin)
         res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE')
+        res.header(
+            'Access-Control-Allow-Headers',
+            'Content-Type, Authorization'
+        )
+        res.sendStatus(200) // Responder con éxito para las solicitudes OPTIONS
+    } else {
+        res.sendStatus(403) // Si el origen no está permitido, enviar un error de acceso prohibido
     }
-    res.status(200)
 })
-
-const PORT = process.env.PORT ?? 1234
+const PORT = process.env.PORT ?? 3000
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)
 })
