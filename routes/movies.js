@@ -20,12 +20,6 @@ const ACCEPTED_ORIGINS = [
 ]
 
 moviesRouter.get('/', (req, res) => {
-    //para solucionar el CORS al ahcer una solocitud GET
-    const origin = req.header('origin')
-    if (ACCEPTED_ORIGINS.includes(origin)) {
-        res.header('Access-Control-Allow-Origin', origin)
-    }
-
     const { genre } = req.query
     if (genre) {
         const filtered_movies = movies.filter((item) =>
@@ -59,12 +53,6 @@ moviesRouter.post('/', (req, res) => {
 })
 
 moviesRouter.delete('/:id', (req, res) => {
-    //para solucionar el CORS al ahcer una solocitud DELETE
-    const origin = req.header('origin')
-    if (ACCEPTED_ORIGINS.includes(origin)) {
-        res.header('Access-Control-Allow-Origin', origin)
-    }
-
     const { id } = req.params
     const movieIndex = movies.findIndex((movie) => movie.id === id)
     if (movieIndex === -1) {
@@ -89,19 +77,4 @@ moviesRouter.patch('/:id', (req, res) => {
     const updateMovie = { ...movies[movieIndex], ...result.data }
     movies[movieIndex] = updateMovie
     return res.status(200).json(updateMovie)
-})
-
-moviesRouter.options('/:id', (req, res) => {
-    const origin = req.header('Origin')
-    if (ACCEPTED_ORIGINS.includes(origin)) {
-        res.header('Access-Control-Allow-Origin', origin)
-        res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE')
-        res.header(
-            'Access-Control-Allow-Headers',
-            'Content-Type, Authorization'
-        )
-        res.sendStatus(200) // Responder con éxito para las solicitudes OPTIONS
-    } else {
-        res.sendStatus(403) // Si el origen no está permitido, enviar un error de acceso prohibido
-    }
 })
