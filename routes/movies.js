@@ -3,21 +3,11 @@ import { Router } from 'express'
 import { readJSON } from '../utils.js'
 import { validateMovie, validatePartialMovie } from '../schemas/movies.js'
 
-import path from 'node:path'
-
 //como leer un json en ESModules de forma recomendada por ahora
 import { createRequire } from 'node:module'
 const require = createRequire(import.meta.url)
 const movies = require('./../movies.json')
-
 export const moviesRouter = Router()
-const ACCEPTED_ORIGINS = [
-    'http://localhost:3000',
-    'http://localhost:1234',
-    'http://172.30.240.1:5500',
-    'http://movies.com',
-    'http://midu.dev',
-]
 
 moviesRouter.get('/', (req, res) => {
     const { genre } = req.query
