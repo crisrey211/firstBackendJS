@@ -13,20 +13,24 @@ Content-Type: application/json
 
 {
   "sql": "SELECT * FROM users",
-  "title": "El señor de los anillos",
+  "title": "El señor de los anillos 2",
   "year": 2002,
   "director": "Peter",
   "duration": 175,
   "poster": "https://www.imdb.com/title/tt0120737/mediaviewer/rm3592958976/?ref_=tt_ov_i",
   "genre": [
-    "Adventure",
+    "Adventure"
   ]
 }
+
+###Borrar pelicula
+DELETE  http://localhost:3000/movies/dcdd0fad-a94c-4810-8acc-5f108d3b18c3
+
 
 ### Actualizar una película
 PATCH http://localhost:3000/movies/dcdd0fad-a94c-4810-8acc-5f108d3b18c3
 Content-Type: application/json
 
 {
-  "year": 2020
+  "year": 2014
 }

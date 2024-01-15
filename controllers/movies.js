@@ -1,4 +1,4 @@
-import { MovieModel } from '../models/movie'
+import { MovieModel } from '../models/movie.js'
 import { validateMovie, validatePartialMovie } from '../schemas/movies.js'
 
 export class MovieController {
@@ -15,6 +15,7 @@ export class MovieController {
     }
     static async create(req, res) {
         const result = validateMovie(req.body)
+        console.log(result)
         if (!result.success) {
             return res
                 .status(400)
@@ -31,7 +32,7 @@ export class MovieController {
         }
         return res.json({ message: 'Movie deleted' })
     }
-    static async patch(req, res) {
+    static async update(req, res) {
         const result = validatePartialMovie(req.body)
         if (!result.success) {
             return res
@@ -39,7 +40,7 @@ export class MovieController {
                 .json({ error: 'ALGO EN LA VALIDACION HA FALLADO' })
         }
         const { id } = req.params
-
+        console.log('object')
         const updatedMovie = await MovieModel.update({ id, input: result.data })
         return res.status(200).json(updatedMovie)
     }
